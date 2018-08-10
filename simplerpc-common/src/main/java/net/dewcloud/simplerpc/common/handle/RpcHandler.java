@@ -6,6 +6,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -37,7 +38,8 @@ public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest>{
 		} catch (Throwable e) {
 			response.setError(e);
 		}
-		
+		//写入 outbundle（即RpcEncoder）进行下一步处理（即编码）后发送到channel中给客户端
+		ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
 	}
 
 
